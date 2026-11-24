@@ -31,12 +31,6 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true });
 });
 
-app.get("/internal", (_req, res) => {
-  res.type("text/plain").send(
-    "Desk note. Not for the public preview list. Release code PREVIEW-4418. Rotate after the spring screening."
-  );
-});
-
 app.get("/", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
