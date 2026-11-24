@@ -16,7 +16,7 @@ This happens because `server.js` registers the `/internal` route without any aut
 
 **The Fix**:
 
-Remove the `/internal` route or protect it with authentication and authorization so only authorized users can access it. If the route must remain in the application, require a logged-in session and explicitly verify that the user has permission to view internal notes. The exposed release code `PREVIEW-4418` should also be considered compromised and rotated.
+The `/internal` route was removed from `server.js` because the application has no authentication or authorization system. The route now returns `Cannot GET /internal`, so it no longer exposes the desk note or release code. The exposed release code `PREVIEW-4418` should also be considered compromised and rotated.
 
 **what happens after you submit a URL:**
 
@@ -33,7 +33,6 @@ The home page initially shows the two cards stored in the `saved` array: Robotic
 **what other routes exist in `server.js`:**
 
 - `GET /health` returns `{ "ok": true }` as JSON.
-- `GET /internal` returns an internal desk note and release code as plain text.
 - `GET /` serves `public/index.html`.
 - `POST /preview` fetches the submitted URL and returns a generated preview card.
 - Static files in `public/` are served by `express.static()`.
