@@ -17,3 +17,23 @@ This happens because `server.js` registers the `/internal` route without any aut
 **The Fix**:
 
 Remove the `/internal` route or protect it with authentication and authorization so only authorized users can access it. If the route must remain in the application, require a logged-in session and explicitly verify that the user has permission to view internal notes. The exposed release code `PREVIEW-4418` should also be considered compromised and rotated.
+
+**what happens after you submit a URL:**
+
+The browser sends `POST /preview` to the Node.js server. The server reads `req.body.url`, rejects an empty value with a `400` response, fetches the URL from the server, converts the response into text, extracts the title and first portion of text, and returns a new preview card in HTML.
+
+**which process makes the request:**
+
+The Node.js/Express process running `server.js` makes the request using the server-side `fetch(url)` call. The browser only sends the URL to the server; it does not directly fetch the submitted page. A fetch failure produces a `502` response.
+
+**what the home page shows versus what the server will fetch:**
+
+The home page initially shows the two cards stored in the `saved` array: Robotics club and Film society. It does not automatically fetch those URLs. When a user submits a URL, the server fetches the submitted external URL and displays a temporary result card containing that page's title, text snippet, URL, and HTTP status.
+
+**what other routes exist in `server.js`:**
+
+- `GET /health` returns `{ "ok": true }` as JSON.
+- `GET /internal` returns an internal desk note and release code as plain text.
+- `GET /` serves `public/index.html`.
+- `POST /preview` fetches the submitted URL and returns a generated preview card.
+- Static files in `public/` are served by `express.static()`.
